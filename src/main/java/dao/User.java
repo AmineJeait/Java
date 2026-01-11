@@ -21,7 +21,7 @@ import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -77,4 +77,10 @@ public class User {
 
 	 @UpdateTimestamp
 	 private Instant lastUpdatedOn;
+	 
+	 @Override
+	 public String toString() {
+	     return nom + ""+prenom;
+	 }
+
 }

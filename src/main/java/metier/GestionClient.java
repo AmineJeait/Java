@@ -77,5 +77,22 @@ public class GestionClient implements IGestionClient {
 		Query request = em.createQuery("SELECT C from Client C");
 		return request.getResultList();
 	}
+	
+	@Override
+	public boolean existsByTelephone(String telephone) {
+	    EntityManager em = EntityManagerUtil.getEntityManager();
+	    try {
+	        Long count = em.createQuery(
+	                "SELECT COUNT(c) FROM Client c WHERE c.telephone = :tel", Long.class)
+	                .setParameter("tel", telephone)
+	                .getSingleResult();
+	        return count > 0;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+
+	
 
 }

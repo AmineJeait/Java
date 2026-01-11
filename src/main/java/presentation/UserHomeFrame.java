@@ -58,20 +58,63 @@ public class UserHomeFrame extends JFrame {
         JMenuItem miAppareils = new JMenuItem("Liste des appareils");
         miAppareils.addActionListener(e -> openAppareils());
         menuAppareils.add(miAppareils);
+        
+        JMenu menuClients = new JMenu("Clients");
+        JMenuItem miClients = new JMenuItem("Liste des clients");
+        miClients.addActionListener(e -> openClients());
+        menuClients.add(miClients);
+        
+        JMenu menuCaisse = new JMenu("Caisse");
+        JMenuItem miCaisse = new JMenuItem("Liste des clients");
+        miCaisse.addActionListener(e -> openCaisse());
+        menuCaisse.add(miCaisse);
+        
+        JMenu menuAccount = new JMenu("Compte");
+        JMenuItem miLogout = new JMenuItem("Déconnexion");
+        miLogout.addActionListener(e -> logout());
+        menuAccount.add(miLogout);
+
 
         menuBar.add(menuReparations);
         menuBar.add(menuAppareils);
+        menuBar.add(menuClients);
+        menuBar.add(menuCaisse);
 
         return menuBar;
     }
 
     private void openReparations() {
         new ReparationListFrame(userId, this).setVisible(true);
-        setVisible(false); // ✅ hide only
+        setVisible(false); 
     }
 
     private void openAppareils() {
         new AppareilListFrame(this).setVisible(true);
-        setVisible(false); // ✅ hide only
+        setVisible(false); 
+    }
+    
+    private void openClients() {
+    	new ClientListFrame(this).setVisible(true);
+        setVisible(false); 
+    }
+    
+    private void openCaisse() {
+    	new CaisseDetailsFrame(userId,this).setVisible(true);
+        setVisible(false); 
+    }
+    
+    
+    private void logout() {
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Voulez-vous vraiment vous déconnecter ?",
+            "Déconnexion",
+            JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            new LoginFrame().setVisible(true);
+            dispose(); 
+        }
     }
 }

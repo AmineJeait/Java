@@ -5,7 +5,9 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
+import dao.Caisse;
 import dao.Transaction;
 import exception.ObjectNotFound;
 
@@ -76,5 +78,19 @@ public class GestionTransaction implements IGestionTransaction {
 		Query request = em.createQuery("SELECT T from Transaction T");
 		return request.getResultList();
 	}
+	
+	 public List<Transaction> findByCaisse(Caisse caisse) {
+		 EntityManager em = EntityManagerUtil.getEntityManager();
+
+	        TypedQuery<Transaction> q = em.createQuery(
+	            "SELECT t FROM Transaction t WHERE t.caisse = :caisse ORDER BY t.date DESC",
+	            Transaction.class
+	        );
+	        q.setParameter("caisse", caisse);
+
+	        List<Transaction> list = q.getResultList();
+	        em.close();
+	        return list;
+	    }
 
 }

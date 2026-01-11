@@ -1,11 +1,6 @@
 package presentation;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -16,29 +11,24 @@ public class AddAppareilFrame extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    private JPanel contentPane;
     private JTextField txtMarque;
     private JTextField txtModele;
     private JTextField txtIemi;
     private JTextArea txtDescription;
 
     private GestionAppareil gestionAppareil = new GestionAppareil();
-    private AddReparationFrame parent;
+    private AppareilListFrame parent;
 
-    /* ================= CONSTRUCTOR ================= */
-    public AddAppareilFrame(AddReparationFrame parent) {
+    public AddAppareilFrame(AppareilListFrame parent) {
         this.parent = parent;
         initialize();
     }
 
-    /* ================= UI ================= */
     private void initialize() {
         setTitle("Nouvel appareil");
-        setSize(480, 380);
-        setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        contentPane = new JPanel(new BorderLayout(10, 10));
+        JPanel contentPane = new JPanel(new BorderLayout(10, 10));
         contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
         setContentPane(contentPane);
 
@@ -54,7 +44,7 @@ public class AddAppareilFrame extends JFrame {
         gbc.insets = new Insets(6, 6, 6, 6);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        /* ===== Marque ===== */
+   
         gbc.gridx = 0; gbc.gridy = 0;
         panelForm.add(new JLabel("Marque"), gbc);
 
@@ -62,7 +52,7 @@ public class AddAppareilFrame extends JFrame {
         txtMarque = new JTextField(20);
         panelForm.add(txtMarque, gbc);
 
-        /* ===== Modèle ===== */
+
         gbc.gridx = 0; gbc.gridy++;
         panelForm.add(new JLabel("Modèle"), gbc);
 
@@ -70,7 +60,7 @@ public class AddAppareilFrame extends JFrame {
         txtModele = new JTextField(20);
         panelForm.add(txtModele, gbc);
 
-        /* ===== IMEI ===== */
+ 
         gbc.gridx = 0; gbc.gridy++;
         panelForm.add(new JLabel("IMEI"), gbc);
 
@@ -78,7 +68,6 @@ public class AddAppareilFrame extends JFrame {
         txtIemi = new JTextField(20);
         panelForm.add(txtIemi, gbc);
 
-        /* ===== Description ===== */
         gbc.gridx = 0; gbc.gridy++;
         panelForm.add(new JLabel("Description"), gbc);
 
@@ -88,7 +77,7 @@ public class AddAppareilFrame extends JFrame {
         txtDescription.setWrapStyleWord(true);
         panelForm.add(new JScrollPane(txtDescription), gbc);
 
-        /* ===== Buttons ===== */
+
         JPanel panelButtons = new JPanel();
 
         JButton btnSave = new JButton("💾 Enregistrer");
@@ -100,28 +89,35 @@ public class AddAppareilFrame extends JFrame {
         contentPane.add(panelButtons, BorderLayout.SOUTH);
 
         btnSave.addActionListener(e -> save());
-        btnCancel.addActionListener(e -> dispose());
+        btnCancel.addActionListener(e -> back());
+
+        pack();
+        setLocationRelativeTo(parent);
     }
 
-    /* ================= LOGIC ================= */
+
     private void save() {
         String marque = txtMarque.getText().trim();
         String modele = txtModele.getText().trim();
         String iemi = txtIemi.getText().trim();
 
         if (marque.isEmpty() || modele.isEmpty() || iemi.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Marque, modèle et IMEI sont obligatoires",
-                    "Validation",
-                    JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(
+                this,
+                "Marque, modèle et IMEI sont obligatoires",
+                "Validation",
+                JOptionPane.WARNING_MESSAGE
+            );
             return;
         }
 
         if (iemi.length() > 15) {
-            JOptionPane.showMessageDialog(this,
-                    "IMEI invalide (max 15 caractères)",
-                    "Validation",
-                    JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(
+                this,
+                "IMEI invalide (max 15 caractères)",
+                "Validation",
+                JOptionPane.WARNING_MESSAGE
+            );
             return;
         }
 
@@ -134,18 +130,30 @@ public class AddAppareilFrame extends JFrame {
 
             gestionAppareil.ajouter(a);
 
-            // 🔁 Return to parent frame
-            parent.AppareilListFrame(a);
+            JOptionPane.showMessageDialog(
+                this,
+                "Appareil ajouté avec succès",
+                "Succès",
+                JOptionPane.INFORMATION_MESSAGE
+            );
 
-            JOptionPane.showMessageDialog(this, "Appareil ajouté avec succès");
+            parent.setVisible(true);
+            parent.loadAppareils(); // 🔄 refresh list
             dispose();
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this,
-                    "IMEI déjà existant ou erreur lors de l'enregistrement",
-                    "Erreur",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                this,
+                "IMEI déjà existant ou erreur lors de l'enregistrement",
+                "Erreur",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
+    }
+
+    private void back() {
+        parent.setVisible(true);
+        dispose();
     }
 }

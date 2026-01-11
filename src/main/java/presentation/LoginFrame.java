@@ -96,6 +96,46 @@ public class LoginFrame extends JFrame {
         gbc_btnLogin.gridwidth = 2;
         gbc_btnLogin.insets = new Insets(20, 10, 10, 10);
         panel.add(btnLogin, gbc_btnLogin);
+        
+        JButton btnClient = new JButton("Je suis un client");
+        btnClient.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+
+        GridBagConstraints gbc_btnClient = new GridBagConstraints();
+        gbc_btnClient.gridx = 0;
+        gbc_btnClient.gridy = 4;
+        gbc_btnClient.gridwidth = 2;
+        gbc_btnClient.insets = new Insets(5, 10, 10, 10);
+
+        panel.add(btnClient, gbc_btnClient);
+
+        btnClient.addActionListener(e -> {
+            String input = JOptionPane.showInputDialog(
+                this,
+                "Entrez l'ID de votre réparation :",
+                "Suivi réparation",
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (input == null || input.trim().isEmpty()) return;
+
+            try {
+                int reparationId = Integer.parseInt(input.trim());
+
+                new ClientReparationTrackFrame(reparationId, this)
+                        .setVisible(true);
+
+                setVisible(false);
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "ID invalide",
+                    "Erreur",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
+
         btnLogin.addActionListener(e -> {
 
             String username = txtUsername.getText().trim();
@@ -117,7 +157,6 @@ public class LoginFrame extends JFrame {
             if (user != null) {
                 dispose();
 
-                // 
                 if (user instanceof Admin) {
                     new AdminHomeFrame(user.getId()).setVisible(true);
                 } else {

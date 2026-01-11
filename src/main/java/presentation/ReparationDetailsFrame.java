@@ -24,7 +24,6 @@ public class ReparationDetailsFrame extends JFrame {
     private Reparation reparation;
     private ReparationListFrame listFrame;
 
-    // ===== ETAT =====
     private JLabel lblEtatValue;
     private JComboBox<String> comboEtat;
     private JPanel etatCardPanel;
@@ -33,6 +32,8 @@ public class ReparationDetailsFrame extends JFrame {
     private JButton btnEdit;
     private JButton btnSave;
     private JButton btnCancel;
+    
+    private int reparationId;
 
     public ReparationDetailsFrame(
             int reparationId,
@@ -41,6 +42,8 @@ public class ReparationDetailsFrame extends JFrame {
 
         this.listFrame = listFrame;
         this.reparation = gestionReparation.rechercher(reparationId);
+        
+        this.reparationId = reparationId;
 
         initialize();
         loadAppareils();
@@ -98,7 +101,6 @@ public class ReparationDetailsFrame extends JFrame {
 
         contentPane.add(panelInfo, BorderLayout.WEST);
 
-        // ===== TABLE APPAREILS =====
         modelAppareils = new DefaultTableModel(
             new Object[]{"Marque", "Modèle", "IMEI", "Description"}, 0
         ) {
@@ -112,19 +114,27 @@ public class ReparationDetailsFrame extends JFrame {
 
         contentPane.add(new JScrollPane(tableAppareils), BorderLayout.CENTER);
 
-        // ===== BUTTONS =====
-        btnEdit = new JButton("✏ Modifier");
-        btnSave = new JButton("💾 Enregistrer");
-        btnCancel = new JButton("✖ Annuler");
+        btnEdit = new JButton("Terminer");
+        btnSave = new JButton("Enregistrer");
+        btnCancel = new JButton("Annuler");
         JButton btnBack = new JButton("⬅ Retour");
 
         btnSave.setVisible(false);
         btnCancel.setVisible(false);
 
-        btnEdit.addActionListener(e -> enableEditMode());
+        //btnEdit.addActionListener(e -> enableEditMode());
         btnCancel.addActionListener(e -> cancelEdit());
         btnSave.addActionListener(e -> saveEtat());
+        
+        btnEdit.addActionListener(e -> {
+            gestionReparation.terminerReparation(reparationId);
+            JOptionPane.showMessageDialog(this, "Réparation terminée");
+            listFrame.setVisible(true);
+            dispose();
+        });
 
+        
+        
         btnBack.addActionListener(e -> {
             listFrame.setVisible(true);
             dispose();
@@ -135,6 +145,8 @@ public class ReparationDetailsFrame extends JFrame {
         panelButtons.add(btnSave);
         panelButtons.add(btnCancel);
         panelButtons.add(btnBack);
+        
+        
 
         contentPane.add(panelButtons, BorderLayout.SOUTH);
     }
@@ -155,7 +167,8 @@ public class ReparationDetailsFrame extends JFrame {
         }
     }
 
-    private void enableEditMode() {
+    @SuppressWarnings("unused")
+	private void enableEditMode() {
         etatCardLayout.show(etatCardPanel, "EDIT");
         btnEdit.setVisible(false);
         btnSave.setVisible(true);

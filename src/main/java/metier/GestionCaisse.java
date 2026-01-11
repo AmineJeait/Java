@@ -75,4 +75,17 @@ public class GestionCaisse implements IGestionCaisse{
 		return request.getResultList();
 	}
 
+	public Caisse rechercherParUser(int userId) throws ObjectNotFound {
+	    EntityManager em = EntityManagerUtil.getEntityManager();
+	    try {
+	        return em.createQuery(
+	            "SELECT c FROM Caisse c WHERE c.user.id = :uid",
+	            Caisse.class
+	        ).setParameter("uid", userId)
+	         .getSingleResult();
+	    } catch (Exception e) {
+	        throw new ObjectNotFound("Caisse introuvable");
+	    }
+	}
+
 }

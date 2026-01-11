@@ -11,4 +11,5 @@ public interface IGestionClient {
 	public void modifier(Client client);
 	public Client rechercher(int id) throws ObjectNotFound ;
 	public List<Client> lister();
+	public boolean existsByTelephone(String telephone);
 }

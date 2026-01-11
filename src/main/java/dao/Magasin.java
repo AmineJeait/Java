@@ -16,7 +16,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -57,4 +56,10 @@ public class Magasin {
 
 	 @UpdateTimestamp
 	 private Instant lastUpdatedOn;
+	 
+	 @Override
+	 public String toString() {
+	     return name;
+	 }
+
 }

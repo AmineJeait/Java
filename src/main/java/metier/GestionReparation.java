@@ -1,13 +1,17 @@
 package metier;
 
+import java.time.Instant;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
-
+import dao.Caisse;
 import dao.Reparation;
+import dao.Transaction;
+import dao.User;
 import exception.ObjectNotFound;
 
 public class GestionReparation implements IGestionReparation{
@@ -93,6 +97,59 @@ public class GestionReparation implements IGestionReparation{
 	        .getResultList();
 	    } finally {
 	        em.close();
+	    }
+	}
+
+	public void terminerReparation(int reparationId) {
+	    EntityManager em = EntityManagerUtil.getEntityManager();
+	    EntityTransaction tx = em.getTransaction();
+
+	    try {
+	        tx.begin();
+
+	        Reparation r = em.find(Reparation.class, reparationId);
+	        if (r == null) {
+	            throw new RuntimeException("Réparation introuvable");
+	        }
+
+	        // ⚠️ Éviter double alimentation
+	        if ("TERMINEE".equals(r.getState())) {
+	            tx.rollback();
+	            return;
+	        }
+
+	        // 1️⃣ Marquer terminée
+	        r.setState("TERMINEE");
+
+	        // 2️⃣ Charger la caisse du user
+	        User user = r.getUser();
+
+	        TypedQuery<Caisse> q = em.createQuery(
+	            "SELECT c FROM Caisse c WHERE c.user = :u", Caisse.class
+	        );
+	        q.setParameter("u", user);
+
+	        Caisse caisse = q.getSingleResult();
+
+	        // 3️⃣ Alimenter la caisse réparation
+	        caisse.setMontantReparation(
+	            caisse.getMontantReparation() + r.getPrix()
+	        );
+
+	        // 4️⃣ Créer la transaction
+	        Transaction t = new Transaction();
+	        t.setCaisse(caisse);
+	        t.setMontant(r.getPrix());
+	        t.setDescription("Réparation #" + r.getId());
+	        t.setDate(Instant.now());
+
+	        em.persist(t);
+
+	        tx.commit();
+
+	    } catch (Exception e) {
+	        if (tx.isActive()) tx.rollback();
+	        e.printStackTrace();
 	    }
 	}
 

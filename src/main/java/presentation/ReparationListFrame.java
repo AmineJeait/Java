@@ -59,11 +59,11 @@ public class ReparationListFrame extends JFrame {
         table = new JTable(model);
         table.setRowHeight(26);
 
-        // Hide ID column
+
         table.getColumnModel().getColumn(0).setMinWidth(0);
         table.getColumnModel().getColumn(0).setMaxWidth(0);
 
-        // 👉 DOUBLE CLICK → DETAILS
+
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

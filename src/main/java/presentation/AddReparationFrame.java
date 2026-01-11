@@ -44,7 +44,6 @@ public class AddReparationFrame extends JFrame {
 
     private List<Appareil> appareilsSelectionnes = new ArrayList<>();
 
-    // ✅ MATCHES ReparationListFrame
     public AddReparationFrame(int userId, UserHomeFrame homeFrame) {
         this.userId = userId;
         this.homeFrame = homeFrame;
@@ -67,7 +66,6 @@ public class AddReparationFrame extends JFrame {
         lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
         contentPane.add(lblTitle, BorderLayout.NORTH);
 
-        /* ================= LEFT FORM ================= */
         JPanel panelForm = new JPanel(new GridBagLayout());
         panelForm.setBorder(BorderFactory.createTitledBorder("Informations réparation"));
 
@@ -89,7 +87,7 @@ public class AddReparationFrame extends JFrame {
 
         gbc.gridx = 1;
         comboEtat = new JComboBox<>(new String[]{
-            "EN_ATTENTE", "EN_COURS", "TERMINEE"
+             "EN_COURS"
         });
         panelForm.add(comboEtat, gbc);
 
@@ -109,7 +107,6 @@ public class AddReparationFrame extends JFrame {
 
         contentPane.add(panelForm, BorderLayout.WEST);
 
-        /* ================= APPAREILS ================= */
         JPanel panelApp = new JPanel(new BorderLayout(5, 5));
         panelApp.setBorder(BorderFactory.createTitledBorder("Appareils"));
 
@@ -119,8 +116,8 @@ public class AddReparationFrame extends JFrame {
         comboAppareil.setPreferredSize(new Dimension(220, 25));
         txtImei = new JTextField(15);
 
-        JButton btnAdd = new JButton("➕ Ajouter");
-        JButton btnDelete = new JButton("🗑 Supprimer");
+        JButton btnAdd = new JButton("Ajouter");
+        JButton btnDelete = new JButton("Supprimer");
 
         panelAdd.add(new JLabel("Modèle"));
         panelAdd.add(comboAppareil);
@@ -141,8 +138,8 @@ public class AddReparationFrame extends JFrame {
 
         /* ================= BUTTONS ================= */
         JPanel panelButtons = new JPanel();
-        JButton btnSave = new JButton("💾 Enregistrer");
-        JButton btnCancel = new JButton("❌ Annuler");
+        JButton btnSave = new JButton("Enregistrer");
+        JButton btnCancel = new JButton("Annuler");
 
         panelButtons.add(btnSave);
         panelButtons.add(btnCancel);
@@ -221,18 +218,17 @@ public class AddReparationFrame extends JFrame {
             r.setPrix(Double.parseDouble(txtPrix.getText()));
             r.setDateDepot(LocalDate.now());
 
-            // 🔴 CHECK AGAINST ALL APPAREILS IN DB
             for (Appareil a : appareilsSelectionnes) {
                 String imei = a.getIemi();
 
                 if (gestionAppareil.existsByImei(imei)) {
                     JOptionPane.showMessageDialog(
                         this,
-                        "❌ IMEI déjà existant dans la base : " + imei,
+                        "IMEI déjà existant dans la base : " + imei,
                         "Erreur IMEI",
                         JOptionPane.ERROR_MESSAGE
                     );
-                    return; // ⛔ stop everything
+                    return;
                 }
 
                 a.setReparation(r);
@@ -244,7 +240,7 @@ public class AddReparationFrame extends JFrame {
 
             JOptionPane.showMessageDialog(
                 this,
-                "✅ Réparation enregistrée avec succès",
+                "Réparation enregistrée avec succès",
                 "Succès",
                 JOptionPane.INFORMATION_MESSAGE
             );
@@ -256,7 +252,7 @@ public class AddReparationFrame extends JFrame {
             e.printStackTrace();
             JOptionPane.showMessageDialog(
                 this,
-                "❌ Erreur lors de l'enregistrement",
+                "Erreur lors de l'enregistrement",
                 "Erreur",
                 JOptionPane.ERROR_MESSAGE
             );
